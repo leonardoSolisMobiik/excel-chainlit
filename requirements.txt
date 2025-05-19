@@ -1,0 +1,19 @@
+# Core
+langchain>=0.1.0
+langchain-openai>=0.0.1
+chainlit>=1.0.0
+openai>=1.76.0
+openai-agents>=0.0.15
+loguru>=0.7.0
+
+# Data analysis
+pandas>=2.1.0
+openpyxl>=3.1.2
+pandasai>=2.0.0
+
+# Visualization
+matplotlib>=3.7.2
+seaborn>=0.12.2
+
+# Utilities
+python-dotenv>=1.0.0

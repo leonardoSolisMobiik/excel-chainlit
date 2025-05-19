@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Environment variables
+.env
+
+# Chainlit
+.chainlit/
+cache/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Node modules
+node_modules/
+
+# Temp files
+.DS_Store
+.cursor/
+.windsurfrules
+
+# Archivos de datos generados
+exports/charts/*
+!exports/charts/.gitkeep
+
+# Caches y logs
+*.log
+*.db
