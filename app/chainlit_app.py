@@ -61,15 +61,18 @@ async def on_message(message: cl.Message):
                             full_response += str(output)
                             await msg.stream_token(str(output))
                 elif event.type == "raw_response_event":
-                    # Evento crudo del modelo (puede contener texto)
                     data = getattr(event, 'data', None)
                     if data and hasattr(data, 'delta'):
+                        print("[DEBUG] Delta recibido:", data.delta)
                         delta = data.delta
                         if delta and hasattr(delta, 'content'):
                             token = delta.content
                             if token:
                                 full_response += token
                                 await msg.stream_token(token)
+                        elif isinstance(delta, str):
+                            full_response += delta
+                            await msg.stream_token(delta)
                 # Puedes agregar más tipos de eventos si lo deseas
 
         # Actualizar mensaje final
