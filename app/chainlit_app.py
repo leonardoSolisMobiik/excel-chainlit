@@ -35,6 +35,11 @@ async def on_message(message: cl.Message):
             input=[{"role": h["role"], "content": h["content"]} for h in history]
         )
         full_response = ""
+
+        # Crear mensaje para streaming en Chainlit
+        msg = cl.Message(content="", author="Excel Assistant")
+        await msg.send()
+
         async for event in streamed_result.stream_events():
             # Procesar eventos de streaming
             if hasattr(event, 'type'):
@@ -43,32 +48,35 @@ async def on_message(message: cl.Message):
                     item = event.item
                     if hasattr(item, 'type') and item.type == "message_output_item":
                         # Mensaje del modelo (token o bloque)
-                        # Extraer texto del mensaje
                         last_content = item.raw_item.content[-1]
                         if hasattr(last_content, 'text'):
                             token = last_content.text
                             if token:
                                 full_response += token
-                                # Si quieres streaming, puedes acumular y mostrar luego
+                                await msg.stream_token(token)
                     elif hasattr(item, 'type') and item.type == "tool_call_output_item":
                         # Resultado de herramienta
                         output = getattr(item, 'output', None)
                         if output:
                             full_response += str(output)
-                            # Si quieres streaming, puedes acumular y mostrar luego
+                            await msg.stream_token(str(output))
                 elif event.type == "raw_response_event":
-                    # Evento crudo del modelo (puede contener texto)
                     data = getattr(event, 'data', None)
                     if data and hasattr(data, 'delta'):
+                        print("[DEBUG] Delta recibido:", data.delta)
                         delta = data.delta
                         if delta and hasattr(delta, 'content'):
                             token = delta.content
                             if token:
                                 full_response += token
-                                # Si quieres streaming, puedes acumular y mostrar luego
+                                await msg.stream_token(token)
+                        elif isinstance(delta, str):
+                            full_response += delta
+                            await msg.stream_token(delta)
                 # Puedes agregar más tipos de eventos si lo deseas
-        # Al final, envía la respuesta completa como un nuevo mensaje
-        await cl.Message(content=full_response, author="Excel Assistant").send()
+
+        # Actualizar mensaje final
+        await msg.update()
         # Guardar la respuesta del asistente en el historial
         history.append({"role": "assistant", "content": full_response})
         cl.user_session.set("history", history)
